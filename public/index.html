@@ -11,7 +11,10 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+    <script src="https://kit.fontawesome.com/dca507abdf.js" crossorigin="anonymous"></script>
     <script src="./game.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
         body {
             background-image: url("./style/img/bg_landscape.jpg");
@@ -34,11 +37,9 @@
             <div style="height: 30%; width: 95%" class="m-auto bg-white rounded-xl shadow-lg flex flex-row items-center justify-around">
 
                 <div class="flex flex-col w-full">
-                    <div class="m-auto">
-                        <p>Wallet: {{wallet | toCurrency}}</p>
-                        <p>Total dug: {{ convertDug }}</p>
-                        <p>{{driveway}}</p>
-                        <p>Kg per second: {{ kgps }}</p>
+                    <div class="m-auto shadow-lg shadow-lime-500 font-['p2'] ">
+                        <p class=" items-center flex"><i class="fas fa-wallet fa-2x m-2 mr-4"></i> {{wallet | toCurrency}}</p>
+                        <p class=" items-center flex"><i class="fas fa-snowflake fa-2x m-2 mr-6"></i> {{ convertDug }}</p>
                     </div>
                 </div>
             </div>

@@ -57,11 +57,11 @@ function clickDig(x, y) {
     style="height: 4rem; position:absolute; left:${x - 26}px; top:${
     y - 26
   }px;pointer-events: none;">
-            <img src="./style/img/snow.png" alt="notification image" class="h-full" draggable="false">
-            <p 
-            class="text-center font-mono font-semibold text-lg text-white" 
+  <i class="far fa-4x text-blue-300 fa-snowflake" style="text-shadow:1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;"></i>
+              <p 
+            class="text-center mt-4 font-semibold text-lime-200 font-['p2'] text-sm " 
             style="text-shadow:1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;">
-            ${weight} Kg
+            + ${weight} Kg
             </p>
         </div>`);
 
@@ -69,7 +69,7 @@ function clickDig(x, y) {
             top: y - 200,
             opacity: 0,
         },
-        900,
+        1200,
         () => {
             $(`#toast${id}`).remove();
         }
@@ -125,7 +125,7 @@ Vue.component("shopbutton", {
         },
     },
     template: `      
-    <div class="w-full bg-slate-300 flex h-16 px-2 items-center justify-around border-2 active:bg-gray-200 cursor-pointer select-none hover:bg-white" v-on:click="purchase()">     
+    <div class="w-full bg-slate-300 flex h-16 px-2 items-center justify-around border-2 active:bg-gray-200 cursor-pointer select-none hover:bg-white font-['p2'] text-xs" v-on:click="purchase()">     
         <div class="flex flex-col w-full text-left">     
             <p>{{title}}</p>
             <p>{{cost | toCurrency}}</p>

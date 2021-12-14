@@ -4,4 +4,7 @@ module.exports = {
         extend: {},
     },
     plugins: [],
+    fontFamily: {
+        p2: "p2",
+    },
 };

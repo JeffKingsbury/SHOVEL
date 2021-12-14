@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face {
+    font-family: "p2";
+    src: url("./font/PressStart2P-Regular.ttf");
+}
