@@ -17,13 +17,13 @@
 }
 
 .load {
-    height: 100%;
-    width: 100%;
+    height: 12px;
+    width: 12px;
     border-radius: 50%;
-    border-top: solid 15px #ac9fdd;
-    border-right: solid 15px #6c59ad;
-    border-left: solid 15px #6c59ad;
-    border-bottom: solid 15px #ac9fdd;
+    border-top: solid 15px #aaaaaa;
+    border-right: solid 15px black;
+    border-left: solid 15px black;
+    border-bottom: solid 15px #aaaaaa;
     -webkit-transition: all 0.5s ease-in;
     -webkit-animation-name: rotate;
     -webkit-animation-duration: 1s;
@@ -34,17 +34,4 @@
     animation-duration: 1s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.5s;
-}
-
-.fade-enter,
-.fade-leave-to
-/* .fade-leave-active below version 2.1.8 */
-
-{
-    opacity: 0;
 }

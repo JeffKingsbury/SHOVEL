@@ -125,15 +125,15 @@ Vue.component("shopbutton", {
         },
     },
     template: `      
-    <div class="w-full bg-slate-300 flex h-16 px-2 items-center justify-around border-2 active:bg-gray-200 cursor-pointer select-none hover:bg-white font-['p2'] text-xs" v-on:click="purchase()">     
-        <div class="flex flex-col w-full text-left">     
+    <div class="w-full bg-slate-300 flex h-16 px-2 items-center justify-around border-2 active:bg-gray-200 cursor-pointer select-none hover:bg-white font-mono text-sm" v-on:click="purchase()">     
+        <div class="flex flex-col w-full">     
             <p>{{title}}</p>
             <p>{{cost | toCurrency}}</p>
             </div>
             <div class="flex flex-col w-full justify-center items-center text-center">     
             <p class="w-3/4">{{kgps}} Kg per second</p>
             </div>
-            <div class="flex flex-col w-1/3 text-right">     
+            <div class="lg:flex hidden flex-col w-1/3 text-right">     
             <p>Owned:</p>
             <p>{{qty}}</p>
             </div>    
@@ -249,6 +249,7 @@ const player = new Vue({
             if (this.wallet > 15 && this.shop[0].shown == false) {
                 this.shop[0].shown = true;
                 localStorage.setItem("0Shown", "true");
+
                 $("#store").animate({
                         width: "50%",
                     },
