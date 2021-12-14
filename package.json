@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "NODE_ENV=production node index.js",
+        "dev": "NODE_ENV=development node index.js",
         "prod": "NODE_ENV=production node index.js",
         "buildCss": "NODE_ENV=production postcss public/style/tailwind.css -o public/style/style.css"
     },
@@ -19,7 +19,11 @@
         "http": "^0.0.1-security",
         "mysql": "^2.18.1",
         "nodemon": "^2.0.15",
-        "path": "^0.12.7",
-        "tailwindcss": "^2.2.19"
+        "path": "^0.12.7"
+    },
+    "devDependencies": {
+        "autoprefixer": "^10.4.0",
+        "postcss": "^8.4.5",
+        "tailwindcss": "^3.0.2"
     }
 }

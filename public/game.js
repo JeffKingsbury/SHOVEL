@@ -125,10 +125,10 @@ Vue.component("shopbutton", {
         },
     },
     template: `      
-    <div class="w-full flex h-16 px-2 items-center justify-around bg-gray-100 border-2 active:bg-gray-200 cursor-pointer select-none hover:bg-white" v-on:click="purchase()">     
+    <div class="w-full bg-slate-300 flex h-16 px-2 items-center justify-around border-2 active:bg-gray-200 cursor-pointer select-none hover:bg-white" v-on:click="purchase()">     
         <div class="flex flex-col w-full text-left">     
             <p>{{title}}</p>
-            <p>{{cost}}$</p>
+            <p>{{cost | toCurrency}}</p>
             </div>
             <div class="flex flex-col w-full justify-center items-center text-center">     
             <p class="w-3/4">{{kgps}} Kg per second</p>
