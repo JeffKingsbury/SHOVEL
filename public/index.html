@@ -14,13 +14,15 @@
     <script src="https://kit.fontawesome.com/dca507abdf.js" crossorigin="anonymous"></script>
     <script src="./game.js" defer></script>
     <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-194476836-1">
-    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-194476836-1"></script>
     <script>
         const versionCookieGrabber = new XMLHttpRequest;
         versionCookieGrabber.open("GET", "/version");
         versionCookieGrabber.send();
+
         window.dataLayer = window.dataLayer || [];
 
         function gtag() {
@@ -44,42 +46,53 @@
     </style>
 </head>
 
-<body class="overflow-hidden h-screen w-screen">
+<body class="overflow-hidden h-screen w-screen select-none">
     <main v-cloak id="gameArea" class="h-screen w-screen bg-white bg-opacity-40 flex flex-row justify-between items-center">
 
         <!--TUTORIAL MODALS-->
-        <section id="tutorialModalsSection" class="h-screen w-screen bg-slate-400 absolute z-50 bg-opacity-60 flex justify-center items-center">
+        <!---WELCOME--->
+        <section v-if="modals.welcome == false" id='welcomeTutorial' class="h-screen w-screen bg-slate-400 absolute z-50 bg-opacity-60 flex justify-center items-center">
+            <div class="p-4 pt-0 w-1/2 h-2/3 bg-slate-100 rounded-xl border-t-2 border-4 border-b-8 border-slate-600 shadow-lg shadow-blue-200 flex flex-col justify-between items-center">
+                <h1 class="m-auto my-4 font-semibold text-2xl font-['p2']">Welcome to Shovel!</h1>
+                <section class=" h-full w-full rounded-xl border-2 shadow-lg shadow-gray-600 p-4 flex flex-col justify-center items-center break-words overflow-x-hidden overflow-y-auto bg-slate-50" style="contain:content;">
 
+                    <p class="absolute h-full overflow-hidden text-9xl font-['p2'] text-gray-100 m-auto">SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>
+                    </p>
 
-
-            <!---TEMPLATE LG SQUARE MIDDLE--->
-            <!-- <div class="p-4 pt-0 w-1/2 h-2/3 bg-slate-300 rounded-xl border-t-2 border-4 border-b-8 border-slate-600 shadow-lg shadow-blue-200 flex flex-col justify-between items-center">
-                <h1 class="m-4 font-semibold text-2xl font-['p2']">TITLE TEXT</h1>
-                <section class="h-full w-full rounded-xl shadow-lg shadow-gray-600 p-4 flex justify-center items-center break-words overflow-x-hidden overflow-y-auto bg-slate-50">BODY SECTION</section>
-                <section class="mt-4">
-                    FOOTER
-                </section>
-            </div> -->
-
-
-            <button type="button" onclick="closeTutModals()" class="far fa-times-circle fa-5x shadow-blue-200 shadow-lg rounded-full m-8 absolute top-0 right-0 bg-slate-100 hover:scale-105 hover:bg-gray-100 active:bg-gray-200 active:scale-95 transform ease-in-out"></button>
-            <!---Welcome tutorial--->
-
-            <div id='welcomeTutorial' class="p-4 pt-0 w-1/2 h-2/3 bg-slate-300 rounded-xl border-t-2 border-4 border-b-8 border-slate-600 shadow-lg shadow-blue-200 flex flex-col justify-between items-center">
-                <h1 class="m-4 font-semibold text-2xl font-['p2']">Welcome to Shovel!</h1>
-                <section class="h-full w-full rounded-xl shadow-lg shadow-gray-600 p-4 flex justify-center items-center break-words overflow-x-hidden overflow-y-auto bg-slate-50">
-                    <p class="first-letter:decoration-cyan-600">
-                        <i class="text-cyan-600 text-7xl font-semibold">S</i><i class=" underline decoration-cyan-600">hovel</i> is an incremental idle game based on every Canadian's favorite past time; Shoveling massive amounts of snow.
-                        <br> You'll get to experience all the thrills shoveling brings like never before! Things like shoveling your neighbors out for a couple bucks, clearing whole city blocks so people can get to work on time, and of course meeting
-                        and owning new people!</p>
-                </section>
-                <section class="mt-4">
-                    FOOTER
+                    <div class="h-full w-full m-4 overflow-y-auto z-20">
+                        <div class="rounded-full h-24 w-24 shadow-md bg-white shadow-blue-400 flex justify-center z-20 items-center m-auto my-4">
+                            <img src="./style/img/shovel.png" alt="Shovel logo" style="height: 70%;">
+                        </div>
+                        <p class="first-letter:decoration-cyan-600 z-20">
+                            <i class="font-semibold underline text-cyan-600 decoration-cyan-600 decoration-2">Shovel</i> is an incremental idle game based on every Canadian's favorite past time; Shoveling massive amounts of <u class="text-slate-800 decoration-2 decoration-slate-500">snow</u>.
+                            <br><br> You'll get to experience all the thrills shoveling brings like never before! Things like shoveling your neighbors out for a couple bucks, clearing whole city blocks so people can get to work on time, and of course
+                            meeting and <u class="no-underline text-gray-600">owning</u> new people!
+                    </div>
+                    <button class="z-20 bg-blue-400 border-2 border-blue-500 px-8 font-['p2'] text-white p-4 rounded-lg shadow-blue-400 shadow-lg transform transition ease-in-out hover:scale-105 active:scale-95 active:bg-blue-500" onclick="$('#welcomeTutorial').fadeOut(600,function(){player.modals.welcome=true})">Get started!</button>
                 </section>
             </div>
-
         </section>
 
+        <!---SHOP--->
+        <section v-if="modals.tutorial1 == true" id='welcomeTutorial' class="h-screen w-screen bg-slate-400 absolute z-50 bg-opacity-60 flex justify-center items-center">
+            <div class="p-4 pt-0 w-1/2 h-2/3 bg-slate-100 rounded-xl border-t-2 border-4 border-b-8 border-slate-600 shadow-lg shadow-blue-200 flex flex-col justify-between items-center">
+                <h1 class="m-auto my-4 font-semibold text-2xl font-['p2']">Open for business!</h1>
+                <section class=" h-full w-full rounded-xl border-2 shadow-lg shadow-gray-600 p-4 flex flex-col justify-center items-center break-words overflow-x-hidden overflow-y-auto bg-slate-50" style="contain:content;">
+                    <p class="absolute h-full overflow-hidden text-9xl font-['p2'] text-gray-100 m-auto">SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>SHOVEL<br>
+                    </p>
+
+                    <div class="h-full w-full m-4 overflow-y-auto z-20">
+                        <div class="flex justify-center items-center m-auto my-4">
+                            <i class="fas fa-hand-holding-usd fa-6x"></i> </div>
+                        <p class="first-letter:decoration-cyan-600 z-20">
+                            The <i class="font-semibold underline text-green-600 decoration-gren-600 decoration-2">Store</i> has been unlocked! <u class="decoration-2 decoration-yellow-600 text-yellow-600 font-semibold">Congratulations!</u><br>
+                            <br> There are all sorts of things available to help you on your journey of making those numbers go up, and most of them are hidden behind an arbitrary progress wall to keep you engaged! For now why don't you <u class="no-underline text-red-800">hire</u>                            a local kid to help out by doing some of the digging for you! I'm sure that as you dig and dig and dig <u class="no-underline text-gray-700">and dig</u> <u class="no-underline text-gray-500">and dig</u> more items will become
+                            available to <s>play the game for you</s> help you progress!
+                    </div>
+                    <button class="z-20 bg-blue-400 border-2 border-blue-500 px-8 font-['p2'] text-white p-4 rounded-lg shadow-blue-400 shadow-lg transform transition ease-in-out hover:scale-105 active:scale-95 active:bg-blue-500" onclick="$('#welcomeTutorial').fadeOut(600,function(){player.modals.tutorial1=false})">Close</button>
+                </section>
+            </div>
+        </section>
 
 
         <div id="clicker" style="height: 95%" class="w-full flex flex-col justify-around bg-gradient-to-tr from-white via-transparent to-gray-300 rounded-xl m-10 border-4 border-b-8 border-gray-400">
@@ -99,11 +112,13 @@
             </div>
 
             <div style="height: 60%; width: 95%; contain: content" class=" m-auto bg-white rounded-xl shadow-lg flex flex-row justify-around items-center">
-                <div id="digButton" style="z-index: 9999; height: 16rem; width: 16rem; border-radius: 50%" class="bg-white rounded-full flex justify-center items-center select-none shadow-lg hover:shadow-xl active:shadow-md shadow-blue-500 hover:shadow-blue-500 border-4 border-gray-400 cursor-pointer hover:scale-110 transform ease-in-out duration-100 active:border-gray-500 active:scale-100 active:bg-gray-100 active:duration-75">
+                <div id="digButton" style="z-index: 9999; height: 16rem; width: 16rem; border-radius: 50%" class="bg-white rounded-full flex justify-center items-center select-none shadow-lg hover:shadow-xl active:shadow-md shadow-blue-500 hover:shadow-blue-500 border-4 border-blue-400 cursor-pointer hover:scale-110 transform ease-in-out duration-100 active:border-gray-500 active:scale-100 active:bg-gray-100 active:duration-75">
                     <img src="./style/img/shovel.png" alt="Dig!" class="h-2/3 select-none absolute" draggable="false" />
                 </div>
 
-
+                <p class="absolute h-full overflow-hidden text-9xl font-['p2'] text-gray-100">
+                    SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>
+                </p>
             </div>
         </div>
 

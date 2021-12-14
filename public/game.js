@@ -3,7 +3,6 @@
 function createToast(type, message = "test", timeIn, timeOut) {
     let color;
     let border;
-    let count = Math.ceil(Math.random() * 10000);
 
     switch (type) {
         case "milestone":
@@ -24,36 +23,25 @@ function createToast(type, message = "test", timeIn, timeOut) {
             break;
     }
 
-    $("#toastArea").append(`       
-    <div id="toast${count}" 
-    style="margin: 1rem; height: 4rem; min-width: 30%; padding-left: 2rem; padding-right: 2rem; padding: 1rem;" 
+    $(`<div style="margin: 1rem; height: 4rem; min-width: 30%; padding-left: 2rem; padding-right: 2rem; padding: 1rem;" 
     class="flex flex-row justify-around items-center rounded-lg shadow-md border-2 border-b-4 font-mono font-semibold text-xl ${color} ${border}">
-            <p> ${message} </p>
-        </div>
-  `);
-
-    //Again, there is probably an easier way, but this will hide the message and fade it in once its appended.
-    $(`#toast${count}`).hide().fadeIn(timeIn);
-
-    //This will set a timeout based on the timeOut variable to fadeout and remove the notification.
-    const toastHide = setTimeout(() => {
-        $(`#toast${count}`).fadeOut(timeIn, () => {
-            $(`#toast${count}`).remove();
+    <p> ${message} </p>
+    </div>`)
+        .delay(timeOut)
+        .appendTo("#toastArea")
+        .fadeOut(1000, function() {
+            $(this).remove();
         });
-    }, timeOut);
 }
 
 //Manually clicking the dig button will generate a random weight between 1-12 kg (The average shovelfull of snow, yes I actually looked that up.)
-//It will the create an icon with the weight displayed where the mouse was located, and fade out while moving upwards.
+//It will the create an icon with the weight displayed where the mouse was located, and fade out while moving upwards, then will remove itself.
 function clickDig(x, y) {
-    let id = Math.ceil(Math.random() * 10000) * player.totalDug;
     let weight = Math.ceil(Math.random() * 12);
     player.totalDug += weight;
     player.drivewayProg += weight;
     player.walletAdd(weight);
-    $("#gameArea").append(`       
-    <div 
-    id="toast${id}" 
+    $(`<div 
     style="height: 4rem; position:absolute; left:${x - 26}px; top:${
     y - 26
   }px;pointer-events: none;">
@@ -63,17 +51,17 @@ function clickDig(x, y) {
             style="text-shadow:1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;">
             + ${weight} Kg
             </p>
-        </div>`);
-
-    $(`#toast${id}`).animate({
-            top: y - 200,
-            opacity: 0,
-        },
-        1200,
-        () => {
-            $(`#toast${id}`).remove();
-        }
-    );
+        </div>`)
+        .appendTo("#gameArea")
+        .animate({
+                top: y - 400,
+                opacity: 0,
+            },
+            1200,
+            function() {
+                $(this).remove();
+            }
+        );
 }
 
 //This is where all the auto-digging magic happens.
@@ -162,11 +150,13 @@ const player = new Vue({
         return {
             //default values:
             awayPenalty: 0.5,
+            shovelBonus: 0,
             wallet: 0,
             totalDug: 0,
             kgps: 0,
-            items: {
-                children: 0,
+            modals: {
+                welcome: false,
+                tutorial1: false,
             },
             shop: [{
                     title: "children",
@@ -174,6 +164,7 @@ const player = new Vue({
                     kgps: 2,
                     shown: false,
                     qty: 0,
+                    bonusMultiplier: 0,
                 },
                 {
                     title: "Electric Snowblower",
@@ -181,6 +172,8 @@ const player = new Vue({
                     kgps: 60,
                     shown: false,
                     qty: 0,
+                    bonusMultiplier: 0,
+
                 },
                 {
                     title: "Gas Snowblower",
@@ -188,6 +181,8 @@ const player = new Vue({
                     kgps: 115,
                     shown: false,
                     qty: 0,
+                    bonusMultiplier: 0,
+
                 },
                 {
                     title: "City snow plow",
@@ -195,6 +190,8 @@ const player = new Vue({
                     kgps: 10000000000,
                     shown: false,
                     qty: 0,
+                    bonusMultiplier: 0,
+
                 },
             ],
         };
@@ -255,7 +252,9 @@ const player = new Vue({
                     },
                     1000
                 );
-                $("#autoDig").fadeIn(2000);
+                $("#autoDig").fadeIn(2000, function() {
+                    player.modals.tutorial1 = true;
+                });
             }
 
             if (this.wallet > 150 && this.shop[1].shown == false) {
@@ -275,6 +274,14 @@ const player = new Vue({
 
         totalDug: function() {
             localStorage.setItem("totalDug", this.totalDug);
+        },
+        modals: {
+            handler: function(val) {
+                for (x in val) {
+                    localStorage.setItem(`modal${x}`, val[x])
+                }
+            },
+            deep: true
         },
     },
     methods: {
@@ -376,6 +383,12 @@ const player = new Vue({
             if (!localStorage.getItem("totalDug")) {
                 localStorage.setItem("totalDug", 0);
             }
+            for (x in this.modals) {
+                if (!localStorage.getItem(`modal${x}`)) {
+                    localStorage.setItem(`modal${x}`, false);
+                }
+                this.modals[x] = (localStorage.getItem(`modal${x}`) === "false") ? false : true;
+            }
             this.wallet = parseFloat(localStorage.getItem("wallet"));
             this.kgps = parseFloat(localStorage.getItem("kgps"));
             this.totalDug = parseFloat(localStorage.getItem("totalDug"));
@@ -452,12 +465,4 @@ function resetLocal() {
     player.wallet = 0;
     localStorage.clear();
     location.reload();
-}
-
-function closeTutModals() {
-    $("#tutorialModalsSection").fadeOut(400, function() {
-        $.each($("#tutorialModalsSection").children("div"), function() {
-            $(this).hide();
-        });
-    });
 }
