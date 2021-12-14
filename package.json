@@ -1,12 +1,12 @@
 {
     "name": "shovel",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "An incremental idle game based on harsh Canadian winters.",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "NODE_ENV=development node index.js",
-        "prod": "NODE_ENV=production node index.js",
+        "start": "NODE_ENV=production node index.js",
         "buildCss": "NODE_ENV=production postcss public/style/tailwind.css -o public/style/style.css"
     },
     "author": "Jeffrey Kingsbury",
