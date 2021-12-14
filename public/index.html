@@ -18,6 +18,9 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-194476836-1">
     </script>
     <script>
+        const versionCookieGrabber = new XMLHttpRequest;
+        versionCookieGrabber.open("GET", "/version");
+        versionCookieGrabber.send();
         window.dataLayer = window.dataLayer || [];
 
         function gtag() {
@@ -44,6 +47,40 @@
 <body class="overflow-hidden h-screen w-screen">
     <main v-cloak id="gameArea" class="h-screen w-screen bg-white bg-opacity-40 flex flex-row justify-between items-center">
 
+        <!--TUTORIAL MODALS-->
+        <section id="tutorialModalsSection" class="h-screen w-screen bg-slate-400 absolute z-50 bg-opacity-60 flex justify-center items-center">
+
+
+
+            <!---TEMPLATE LG SQUARE MIDDLE--->
+            <!-- <div class="p-4 pt-0 w-1/2 h-2/3 bg-slate-300 rounded-xl border-t-2 border-4 border-b-8 border-slate-600 shadow-lg shadow-blue-200 flex flex-col justify-between items-center">
+                <h1 class="m-4 font-semibold text-2xl font-['p2']">TITLE TEXT</h1>
+                <section class="h-full w-full rounded-xl shadow-lg shadow-gray-600 p-4 flex justify-center items-center break-words overflow-x-hidden overflow-y-auto bg-slate-50">BODY SECTION</section>
+                <section class="mt-4">
+                    FOOTER
+                </section>
+            </div> -->
+
+
+            <button type="button" onclick="closeTutModals()" class="far fa-times-circle fa-5x shadow-blue-200 shadow-lg rounded-full m-8 absolute top-0 right-0 bg-slate-100 hover:scale-105 hover:bg-gray-100 active:bg-gray-200 active:scale-95 transform ease-in-out"></button>
+            <!---Welcome tutorial--->
+
+            <div id='welcomeTutorial' class="p-4 pt-0 w-1/2 h-2/3 bg-slate-300 rounded-xl border-t-2 border-4 border-b-8 border-slate-600 shadow-lg shadow-blue-200 flex flex-col justify-between items-center">
+                <h1 class="m-4 font-semibold text-2xl font-['p2']">Welcome to Shovel!</h1>
+                <section class="h-full w-full rounded-xl shadow-lg shadow-gray-600 p-4 flex justify-center items-center break-words overflow-x-hidden overflow-y-auto bg-slate-50">
+                    <p class="first-letter:decoration-cyan-600">
+                        <i class="text-cyan-600 text-7xl font-semibold">S</i><i class=" underline decoration-cyan-600">hovel</i> is an incremental idle game based on every Canadian's favorite past time; Shoveling massive amounts of snow.
+                        <br> You'll get to experience all the thrills shoveling brings like never before! Things like shoveling your neighbors out for a couple bucks, clearing whole city blocks so people can get to work on time, and of course meeting
+                        and owning new people!</p>
+                </section>
+                <section class="mt-4">
+                    FOOTER
+                </section>
+            </div>
+
+        </section>
+
+
 
         <div id="clicker" style="height: 95%" class="w-full flex flex-col justify-around bg-gradient-to-tr from-white via-transparent to-gray-300 rounded-xl m-10 border-4 border-b-8 border-gray-400">
             <div style="height: 30%; width: 95%" class="m-auto bg-white rounded-xl shadow-lg flex flex-row items-center justify-around">
@@ -52,8 +89,8 @@
                     <div class="m-auto font-['p2'] w-full">
                         <p class=" items-center flex"><i class="fas fa-wallet fa-2x m-2 mr-4"></i> {{wallet | toCurrency}}</p>
                         <p class=" items-center flex"><i class="fas fa-snowflake fa-2x m-2 mr-6"></i> {{ convertDug }}</p>
-                        <p class=" items-center flex">
-                            <i id="autoDigLoader" class="mr-6 ml-2"></i> {{kgps}} kg/sec
+                        <p id="autoDig" class=" items-center flex">
+                            <i id="autoDigLoader" class="mr-6 ml-2" style="height: 15px; width: 15px;border: solid 15px black; border-radius: 50%;"></i> {{kgps}} kg/sec
                         </p>
                     </div>
 

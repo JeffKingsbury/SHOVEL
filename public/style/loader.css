@@ -20,10 +20,10 @@
     height: 12px;
     width: 12px;
     border-radius: 50%;
-    border-top: solid 15px #aaaaaa;
-    border-right: solid 15px black;
-    border-left: solid 15px black;
-    border-bottom: solid 15px #aaaaaa;
+    border-top: solid 15px #aaaaaa !important;
+    border-right: solid 15px black !important;
+    border-left: solid 15px black !important;
+    border-bottom: solid 15px #aaaaaa !important;
     -webkit-transition: all 0.5s ease-in;
     -webkit-animation-name: rotate;
     -webkit-animation-duration: 1s;

@@ -453,3 +453,11 @@ function resetLocal() {
     localStorage.clear();
     location.reload();
 }
+
+function closeTutModals() {
+    $("#tutorialModalsSection").fadeOut(400, function() {
+        $.each($("#tutorialModalsSection").children("div"), function() {
+            $(this).hide();
+        });
+    });
+}

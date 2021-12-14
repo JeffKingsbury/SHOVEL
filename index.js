@@ -1,5 +1,5 @@
 const express = require("express");
-const version = process.env.npm_package_version;
+const version = process.env.npm_package_version || "- TEST BUILD";
 const app = express();
 const port = process.env.PORT || 8080;
 const path = require("path");
@@ -14,8 +14,12 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.get("/", (req, res) => {
-    res.cookie("version", version);
     res.sendFile(path.join(__dirname + "/public/index.html"));
+});
+
+app.get("/version", (req, res) => {
+    res.cookie("version", version);
+    res.send();
 });
 
 app.listen(port, () => {
