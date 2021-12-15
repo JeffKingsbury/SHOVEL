@@ -38,7 +38,7 @@ function createToast(type, message = "test", timeIn, timeOut) {
 //It will the create an icon with the weight displayed where the mouse was located, and fade out while moving upwards, then will remove itself.
 function clickDig(x, y) {
     let weight = Math.ceil(Math.random() * 12);
-    (player.shovelBonus > 0) ? weight *= shovelBonus: null;
+    (player.shovelBonus > 0) ? weight *= player.shovelBonus: null;
     player.totalDug += weight;
     player.drivewayProg += weight;
     player.walletAdd(weight);
@@ -130,7 +130,6 @@ Vue.component("shopbutton", {
             </div>
     `,
 });
-
 Vue.component("shovelupgradebutton", {
     props: ["title", "cost"],
     data: function() {
@@ -215,9 +214,11 @@ const player = new Vue({
     el: "#gameArea",
     data: function() {
         return {
+            uid: null,
             //default values:
             awayPenalty: 0.5,
-            shovelBonus: 0,
+            shovelBonus: 1,
+            autoBonus: 0,
             wallet: 0,
             totalDug: 0,
             kgps: 0,
@@ -268,99 +269,15 @@ const player = new Vue({
                 cost: 500,
                 shovelBonus: 2,
                 unlocked: false
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, ],
+            }],
 
 
             shovelUpgrades: [{
                 title: "Bigger shovel",
                 description: "Shovel 2x more per click using this bigger shovel.",
                 cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
-            }, {
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2
+                shovelBonus: 2,
+                unlocked: false
             }, ]
         };
     },
@@ -532,17 +449,32 @@ const player = new Vue({
                     }
                 }
             }
-            return true;
+            return false;
         }
 
         //This will keep the page title updated with the latest version number supplied by the server, instead of updating it manually.
         $("html").append(`<title>SHOVEL${getCookieVersion()}</title>`);
 
+
+        if (getCookiePlayer("uid") == 0 && getCookieLocalCheck() == false || getCookiePlayer("uid") == null && getCookieLocalCheck() == false) {
+            window.location.replace("/");
+        }
+
+
+        this.uid = getCookiePlayer("uid")
+
         //This checks if the user is logged in or playing locally.
         //If they're playing locally the game is handed over to localstorage, otherwise the server will send the initial info via cookies for all the player variables and progress.
-        if (getCookieLocalCheck() == true) {
-            localStorage.setItem("localCheck", "true");
-
+        if (getCookieLocalCheck() == true || localStorage.getItem('playerJsonServ') == 'null') {
+            if (localStorage.getItem("newAccCheck") == 'true') {
+                if (!confirm("There is offline progress not associated to this account. Would you like to transfer the offine progress to this account?")) {
+                    localStorage.clear();
+                    localStorage.setItem("newAccCheck", false)
+                    localStorage.setItem("playerJsonServ", null)
+                    location.reload()
+                    return
+                }
+            }
             if (!localStorage.getItem("wallet")) {
                 localStorage.setItem("wallet", 0);
             }
@@ -576,15 +508,30 @@ const player = new Vue({
                 }
             }
         } else {
-            localStorage.setItem("localCheck", "false");
-            this.awayPenalty = parseFloat(getCookiePlayer("awayPenalty")).toFixed(2);
-            this.wallet = parseFloat(getCookiePlayer("wallet")).toFixed(2);
-            this.kgps = parseInt(getCookiePlayer("kgps"));
-            this.totalDug = parseInt(getCookiePlayer("totalDug"));
+            let servData = JSON.parse(localStorage.getItem('playerJsonServ'));
+            this.awayPenalty = servData.awayPenalty;
+            this.wallet = servData.wallet;
+            this.kgps = servData.kgps;
+            this.totalDug = servData.totalDug;
+            this.shovelBonus = servData.shovelBonus;
+            this.autoBonus = servData.autoBonus;
+
 
             for (x = 0; x < this.shop.length; x++) {
-                this.shop[x].shown = getCookieUnlocks(`${x}Shown`);
+                this.shop[x].shown = servData.shop[(`${x}Shown`)];
             }
+            for (x = 0; x < this.autoUpgrades.length; x++) {
+                this.autoUpgrades[x].unlocked = servData.autoUpgrades[x].unlocked;
+                console.log(this.autoUpgrades[x])
+            }
+            for (x = 0; x < this.shovelUpgrades.length; x++) {
+                this.shovelUpgrades[x].unlocked = servData.shovelUpgrades[x].unlocked;
+                console.log(this.shovelUpgrades[x])
+            }
+            for (x in this.modals) {
+                this.modals[x] = servData.modals[x];
+            }
+
         }
 
         //Get the progress from when the game was closed to now.
@@ -628,6 +575,7 @@ const player = new Vue({
     },
 });
 
+
 //reset all progress locally. Currently only usable in the dev console for testing, will eventually be used as a button in settings
 function resetLocal() {
     player.kgps = 0;
@@ -635,3 +583,10 @@ function resetLocal() {
     localStorage.clear();
     location.reload();
 }
+
+const update = setInterval(function() {
+    let updateServ = new XMLHttpRequest;
+    updateServ.open("POST", "/updateUser");
+    updateServ.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    updateServ.send(JSON.stringify(player.$data))
+}, 1000)
