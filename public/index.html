@@ -13,6 +13,7 @@
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
     <script src="https://kit.fontawesome.com/dca507abdf.js" crossorigin="anonymous"></script>
     <script src="./game.js" defer></script>
+    <script src="./styler.js" defer></script>
     <!-- <script src="https://cdn.tailwindcss.com"></script> -->
 
 
@@ -32,18 +33,6 @@
 
         gtag('config', 'UA-194476836-1');
     </script>
-    <style>
-        body {
-            background-image: url("./style/img/bg_landscape.jpg");
-            background-size: cover;
-        }
-        
-        @media only screen and (max-width: 600px) {
-            body {
-                background-image: url("./style/img/bg_portrait.jpg") !important;
-            }
-        }
-    </style>
 </head>
 
 <body class="overflow-hidden h-screen w-screen select-none">
@@ -95,30 +84,37 @@
         </section>
 
 
-        <div id="clicker" style="height: 95%" class="w-full flex flex-col justify-around bg-gradient-to-tr from-white via-transparent to-gray-300 rounded-xl m-10 border-4 border-b-8 border-gray-400">
-            <div style="height: 30%; width: 95%" class="m-auto bg-white rounded-xl shadow-lg flex flex-row items-center justify-around">
+        <!--------END TUTORIAL MODALS-------->
 
-                <div class="flex flex-col">
-                    <div class="m-auto font-['p2'] w-full">
-                        <p class=" items-center flex"><i class="fas fa-wallet fa-2x m-2 mr-4"></i> {{wallet | toCurrency}}</p>
-                        <p class=" items-center flex"><i class="fas fa-snowflake fa-2x m-2 mr-6"></i> {{ convertDug }}</p>
-                        <p id="autoDig" class=" items-center flex">
-                            <i id="autoDigLoader" class="mr-6 ml-2" style="height: 15px; width: 15px;border: solid 15px black; border-radius: 50%;"></i> {{kgps}} kg/sec
-                        </p>
+
+        <!-------MAIN GAME AREA--------->
+
+        <div id="clicker" style="height: 95%" class="w-full flex flex-col justify-around bg-slate-200 rounded-xl m-10 border-4 border-b-8 border-t-2 border-slate-400 shadow-lg shadow-slate-100">
+            <section class="flex flex-row justify-evenly items-center" style="height: 40%; width: 100%;">
+                <div style="height: 90%; width: 30%; contain: content;" class="m-auto bg-white rounded-xl shadow-lg flex flex-row items-center justify-around" id="clickerContainerStats">
+                    <div class="flex flex-col z-20">
+                        <div class="m-auto font-['p2'] w-full">
+                            <p class=" items-center flex"><i class="fas fa-wallet fa-2x m-2 mr-4"></i> {{wallet | toCurrency}}</p>
+                            <p class=" items-center flex"><i class="fas fa-snowflake fa-2x m-2 mr-6"></i> {{ convertDug }}</p>
+                            <p id="autoDig" class=" items-center flex">
+                                <i id="autoDigLoader" class="mr-6 ml-2" style="height: 15px; width: 15px;border: solid 15px black; border-radius: 50%;"></i> {{kgps}} kg/sec
+                            </p>
+                        </div>
+
                     </div>
 
                 </div>
 
-            </div>
+                <div style="height: 90%; width: 60%; contain: content;" class="m-auto bg-white rounded-xl shadow-lg flex flex-row items-center justify-around" id="clickerContainerOther">
 
-            <div style="height: 60%; width: 95%; contain: content" class=" m-auto bg-white rounded-xl shadow-lg flex flex-row justify-around items-center">
+
+                </div>
+            </section>
+            <div id="clickerContainerManual" style="height: 50%; width: 95%; contain: content" class=" m-auto bg-white rounded-xl shadow-lg flex flex-row justify-around items-center">
                 <div id="digButton" style="z-index: 9999; height: 16rem; width: 16rem; border-radius: 50%" class="bg-white rounded-full flex justify-center items-center select-none shadow-lg hover:shadow-xl active:shadow-md shadow-blue-500 hover:shadow-blue-500 border-4 border-blue-400 cursor-pointer hover:scale-110 transform ease-in-out duration-100 active:border-gray-500 active:scale-100 active:bg-gray-100 active:duration-75">
                     <img src="./style/img/shovel.png" alt="Dig!" class="h-2/3 select-none absolute" draggable="false" />
                 </div>
-
-                <p class="absolute h-full overflow-hidden text-9xl font-['p2'] text-gray-100">
-                    SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>
-                </p>
+                <h1 v-if="modals.welcome2 == false" style="z-index: 99999;" class="absolute text-center bottom-3 font-['p2'] underline decoration-4 decoration-red-400 text-red-600"><i class="fas fa-4x fa-arrow-up animate-bounce"></i> <br> Click here to start digging!</h1>
             </div>
         </div>
 
@@ -135,7 +131,13 @@
                 <div class="w-full h-8 bg-gray-400 shadow-md flex justify-center items-center text-center border-t-2 border-b-2 border-black">
                     <p class="font-['p2']">Upgrades</p>
                 </div>
-                Upgrade section
+                <div class="flex flex-row flex-wrap overflow-y-auto overflow-x-hidden">
+
+                    <shovelupgradebutton class="m-2" v-for="item in shovelUpgrades" :title="item.title" :cost="item.cost" :description="item.description"></shovelupgradebutton>
+                    <autoupgradebutton class="m-2" v-for="item in autoUpgrades" :title="item.title" :cost="item.cost" :description="item.description"></autoupgradebutton>
+
+                </div>
+
             </section>
 
             <section class="h-32 w-full bg-green-300 flex justify-center items-center overflow-x-hidden border-black border-t-2 rounded-bl-xl">

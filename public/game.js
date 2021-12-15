@@ -38,6 +38,7 @@ function createToast(type, message = "test", timeIn, timeOut) {
 //It will the create an icon with the weight displayed where the mouse was located, and fade out while moving upwards, then will remove itself.
 function clickDig(x, y) {
     let weight = Math.ceil(Math.random() * 12);
+    (player.shovelBonus > 0) ? weight *= shovelBonus: null;
     player.totalDug += weight;
     player.drivewayProg += weight;
     player.walletAdd(weight);
@@ -57,7 +58,7 @@ function clickDig(x, y) {
                 top: y - 400,
                 opacity: 0,
             },
-            1200,
+            2200,
             function() {
                 $(this).remove();
             }
@@ -130,6 +131,72 @@ Vue.component("shopbutton", {
     `,
 });
 
+Vue.component("shovelupgradebutton", {
+    props: ["title", "cost"],
+    data: function() {
+
+    },
+
+    watch: {},
+    computed: {},
+    methods: {
+        purchase: function() {
+            if (player.wallet >= this.cost) {
+                if (!$("#autoDigLoader").hasClass("load")) {
+                    $("#autoDigLoader").addClass("load");
+                }
+                for (x in player.shop) {
+                    if (player.shop[x].title == this.title) {
+                        player.shop[x].cost = (player.shop[x].cost * 1.08).toFixed(2);
+                        player.shop[x].qty++;
+                        localStorage.setItem(`${x}Shop`, player.shop[x].qty);
+                    }
+                }
+                player.wallet -= this.cost;
+                player.kgps += this.kgps;
+            } else {
+                createToast("warning", "Insufficient funds", 300, 1000);
+            }
+        },
+    },
+    template: `      
+<div class="w-8 h-8 bg-slate-300">{{title}} {{cost}}</div>
+    `,
+});
+
+
+Vue.component("autoupgradebutton", {
+    props: ["title", "cost"],
+    data: function() {
+
+    },
+
+    watch: {},
+    computed: {},
+    methods: {
+        purchase: function() {
+            if (player.wallet >= this.cost) {
+                if (!$("#autoDigLoader").hasClass("load")) {
+                    $("#autoDigLoader").addClass("load");
+                }
+                for (x in player.shop) {
+                    if (player.shop[x].title == this.title) {
+                        player.shop[x].cost = (player.shop[x].cost * 1.08).toFixed(2);
+                        player.shop[x].qty++;
+                        localStorage.setItem(`${x}Shop`, player.shop[x].qty);
+                    }
+                }
+                player.wallet -= this.cost;
+                player.kgps += this.kgps;
+            } else {
+                createToast("warning", "Insufficient funds", 300, 1000);
+            }
+        },
+    },
+    template: `      
+<div class="w-8 h-8 bg-slate-300">{{title}} {{cost}}</div>
+    `,
+});
 //Taken from https://stackoverflow.com/questions/43208012/how-do-i-format-currencies-in-a-vue-component
 //Super nice little filter to convert the wallet float to formatted currency (ex: $120,000,000.00 instead of $120000000.00)
 Vue.filter("toCurrency", function(value) {
@@ -156,6 +223,7 @@ const player = new Vue({
             kgps: 0,
             modals: {
                 welcome: false,
+                welcome2: false,
                 tutorial1: false,
             },
             shop: [{
@@ -194,6 +262,106 @@ const player = new Vue({
 
                 },
             ],
+            autoUpgrades: [{
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2,
+                unlocked: false
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, ],
+
+
+            shovelUpgrades: [{
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, {
+                title: "Bigger shovel",
+                description: "Shovel 2x more per click using this bigger shovel.",
+                cost: 500,
+                shovelBonus: 2
+            }, ]
         };
     },
     computed: {
@@ -240,6 +408,9 @@ const player = new Vue({
     },
     watch: {
         wallet: function() {
+            if (this.modals.welcome2 == false) {
+                this.modals.welcome2 = true
+            }
             localStorage.setItem("wallet", this.wallet.toFixed(2));
 
             //Shop unlocks
@@ -250,11 +421,10 @@ const player = new Vue({
                 $("#store").animate({
                         width: "50%",
                     },
-                    1000
+                    800
                 );
-                $("#autoDig").fadeIn(2000, function() {
-                    player.modals.tutorial1 = true;
-                });
+                player.modals.tutorial1 = true;
+                $("#autoDig").fadeIn(2000);
             }
 
             if (this.wallet > 150 && this.shop[1].shown == false) {
@@ -291,7 +461,6 @@ const player = new Vue({
     },
     mounted: function() {
         //The OnLoad function.
-
         //Setting different functions for grabbing the correct cookies
         //***Yes this is a bit redundant, but it works.
         function getCookieVersion(cname = "version") {
