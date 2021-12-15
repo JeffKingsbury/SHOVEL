@@ -456,7 +456,7 @@ const player = new Vue({
         $("html").append(`<title>SHOVEL${getCookieVersion()}</title>`);
 
 
-        if (getCookiePlayer("uid") == 0 && getCookieLocalCheck() == false || getCookiePlayer("uid") == null && getCookieLocalCheck() == false) {
+        if (getCookiePlayer("uid") == 0 && getCookieLocalCheck() == false && localStorage.getItem('localCheck') == 'false' || getCookiePlayer("uid") == null && getCookieLocalCheck() == false && localStorage.getItem('localCheck') == 'false') {
             window.location.replace("/");
         }
 
@@ -465,7 +465,7 @@ const player = new Vue({
 
         //This checks if the user is logged in or playing locally.
         //If they're playing locally the game is handed over to localstorage, otherwise the server will send the initial info via cookies for all the player variables and progress.
-        if (getCookieLocalCheck() == true || localStorage.getItem('playerJsonServ') == 'null') {
+        if (getCookieLocalCheck() == true || localStorage.getItem('playerJsonServ') == 'null' || localStorage.getItem('localCheck') == 'true') {
             if (localStorage.getItem("newAccCheck") == 'true') {
                 if (!confirm("There is offline progress not associated to this account. Would you like to transfer the offine progress to this account?")) {
                     localStorage.clear();
@@ -585,8 +585,10 @@ function resetLocal() {
 }
 
 const update = setInterval(function() {
-    let updateServ = new XMLHttpRequest;
-    updateServ.open("POST", "/updateUser");
-    updateServ.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    updateServ.send(JSON.stringify(player.$data))
-}, 1000)
+    if (localStorage.getItem('localCheck') == 'false') {
+        let updateServ = new XMLHttpRequest;
+        updateServ.open("POST", "/updateUser");
+        updateServ.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        updateServ.send(JSON.stringify(player.$data))
+    }
+}, 30000)
