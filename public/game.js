@@ -38,6 +38,8 @@ function createToast(type, message = "test", timeIn, timeOut) {
 //It will the create an icon with the weight displayed where the mouse was located, and fade out while moving upwards, then will remove itself.
 function clickDig(x, y) {
     let weight = Math.ceil(Math.random() * 12);
+    let walletx = document.getElementById("walletUi").getBoundingClientRect().x;
+    let wallety = document.getElementById("walletUi").getBoundingClientRect().y;
     (player.shovelBonus > 0) ? weight *= player.shovelBonus: null;
     player.totalDug += weight;
     player.drivewayProg += weight;
@@ -45,7 +47,7 @@ function clickDig(x, y) {
     $(`<div 
     style="height: 4rem; position:absolute; left:${x - 26}px; top:${
     y - 26
-  }px;pointer-events: none;">
+  }px;pointer-events: none; ">
   <i class="far fa-4x text-blue-300 fa-snowflake" style="text-shadow:1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;"></i>
               <p 
             class="text-center mt-4 font-semibold text-lime-200 font-['p2'] text-sm " 
@@ -55,10 +57,11 @@ function clickDig(x, y) {
         </div>`)
         .appendTo("#gameArea")
         .animate({
-                top: y - 400,
+                top: wallety,
+                left: walletx,
                 opacity: 0,
             },
-            2200,
+            2000,
             function() {
                 $(this).remove();
             }
@@ -82,16 +85,25 @@ const dig = setInterval(() => {
 //It games all the relevant info from player.shop[]
 //It has its own purchase() function and remains self contained so multiple can be added without touching the props of the other items.
 Vue.component("shopbutton", {
-    props: ["title", "cost", "kgps", "qty"],
+    props: ["title", "cost", "kgps", "qty", "description"],
     data: function() {
         return {
             qty: 0,
             currentcost: this.cost,
             kgps: this.kgps,
+            hover: false
         };
     },
 
-    watch: {},
+    watch: {
+        hover: function() {
+            if (hover == true) {
+                console.log(hover)
+            } else {
+                console.log(hover)
+            }
+        }
+    },
     computed: {},
     methods: {
         purchase: function() {
@@ -113,9 +125,10 @@ Vue.component("shopbutton", {
             }
         },
     },
-    template: `      
-    <div class="w-full bg-slate-300 flex h-16 px-2 items-center justify-around border-2 active:bg-gray-200 cursor-pointer select-none hover:bg-white font-mono text-sm" v-on:click="purchase()">     
-        <div class="flex flex-col w-full">     
+    template: `
+    
+    <div style="width:93%" class="m-auto rounded-lg bg-slate-400 my-1 flex h-16 px-2 items-center justify-around border-t-2 border-4 border-b-8 border-slate-500 active:bg-slate-400 active:border-slate-500 hover:scale-105 active:scale-95 transition ease-in-out cursor-pointer select-none hover:bg-slate-300 hover:border-slate-400 font-mono text-sm" v-on:click="purchase()">     
+    <div class="flex flex-col w-full">     
             <p>{{title}}</p>
             <p>{{cost | toCurrency}}</p>
             </div>
@@ -126,12 +139,11 @@ Vue.component("shopbutton", {
             <p>Owned:</p>
             <p>{{qty}}</p>
             </div>    
-            
             </div>
     `,
 });
 Vue.component("shovelupgradebutton", {
-    props: ["title", "cost"],
+    props: ["title", "cost", "bonus", "img"],
     data: function() {
 
     },
@@ -159,13 +171,14 @@ Vue.component("shovelupgradebutton", {
         },
     },
     template: `      
-<div class="w-8 h-8 bg-slate-300">{{title}} {{cost}}</div>
-    `,
+    <button class="w-16 h-16 rounded-lg bg-slate-700 shadow-gray-700 shadow-md flex justify-center items-center m-2 hover:scale-105 active:scale-95 transition ease-in-out" style="contain:content" v-on:click="purchase()">
+    <img draggable="false" :src="img" alt="upgrade icon" style="height:70%"/>
+    </button>   `,
 });
 
 
 Vue.component("autoupgradebutton", {
-    props: ["title", "cost"],
+    props: ["title", "cost", "bonus", "img"],
     data: function() {
 
     },
@@ -175,25 +188,24 @@ Vue.component("autoupgradebutton", {
     methods: {
         purchase: function() {
             if (player.wallet >= this.cost) {
-                if (!$("#autoDigLoader").hasClass("load")) {
-                    $("#autoDigLoader").addClass("load");
-                }
-                for (x in player.shop) {
-                    if (player.shop[x].title == this.title) {
-                        player.shop[x].cost = (player.shop[x].cost * 1.08).toFixed(2);
-                        player.shop[x].qty++;
-                        localStorage.setItem(`${x}Shop`, player.shop[x].qty);
+                for (x in player.autoUpgrades) {
+                    if (player.autoUpgrades[x].title == this.title) {
+                        //player.autoUpgrades[x].used = true;
+                        player.autoUpgrades[x].bonus()
                     }
                 }
-                player.wallet -= this.cost;
-                player.kgps += this.kgps;
+
+                //player.wallet -= this.cost;
+
             } else {
                 createToast("warning", "Insufficient funds", 300, 1000);
             }
         },
     },
     template: `      
-<div class="w-8 h-8 bg-slate-300">{{title}} {{cost}}</div>
+<button class="w-16 h-16 rounded-lg bg-slate-700 shadow-gray-700 shadow-md flex justify-center items-center m-2 hover:scale-105 active:scale-95 transition ease-in-out" style="contain:content" v-on:click="purchase()">
+<img draggable="false" :src="img" alt="upgrade icon" style="height:70%"/>
+</button>
     `,
 });
 //Taken from https://stackoverflow.com/questions/43208012/how-do-i-format-currencies-in-a-vue-component
@@ -214,14 +226,16 @@ const player = new Vue({
     el: "#gameArea",
     data: function() {
         return {
+            settingsTooltip: false,
             uid: null,
             //default values:
             awayPenalty: 0.5,
             shovelBonus: 1,
-            autoBonus: 0,
+            autoBonus: 1,
             wallet: 0,
             totalDug: 0,
             kgps: 0,
+
             modals: {
                 welcome: false,
                 welcome2: false,
@@ -229,6 +243,7 @@ const player = new Vue({
             },
             shop: [{
                     title: "children",
+                    description: "A local child whos parents agreed will help out! Can't shovel all that much (for now). But cheap labor is cheap labor.",
                     cost: 15,
                     kgps: 2,
                     shown: false,
@@ -236,18 +251,20 @@ const player = new Vue({
                     bonusMultiplier: 0,
                 },
                 {
-                    title: "Electric Snowblower",
+                    title: "Snoomba",
+                    description: "Someone had the bright idea of converting their smart vacuum into a smart shovel. Somehow it actually worked.",
                     cost: 250,
-                    kgps: 60,
+                    kgps: 15,
                     shown: false,
                     qty: 0,
                     bonusMultiplier: 0,
 
                 },
                 {
-                    title: "Gas Snowblower",
+                    title: "Skilled worker",
+                    description: "One ad on Fourth-wall Marketplace (Formerly Visage Tome) later and you have yourself a \"skilled\" worker.",
                     cost: 1200,
-                    kgps: 115,
+                    kgps: 85,
                     shown: false,
                     qty: 0,
                     bonusMultiplier: 0,
@@ -255,6 +272,7 @@ const player = new Vue({
                 },
                 {
                     title: "City snow plow",
+                    description: "",
                     cost: 500000,
                     kgps: 10000000000,
                     shown: false,
@@ -264,11 +282,23 @@ const player = new Vue({
                 },
             ],
             autoUpgrades: [{
-                title: "Bigger shovel",
-                description: "Shovel 2x more per click using this bigger shovel.",
-                cost: 500,
-                shovelBonus: 2,
-                unlocked: false
+                title: "Special Milk",
+                description: "Help those kids grow big and strong! Children can now shovel twice as much.",
+                cost: 0,
+                bonus: function() {
+                    for (x in player.shop) {
+                        if (player.shop[x].title == "children") {
+                            let owned = player.shop[x].qty;
+                            let currentKgps = player.shop[x].kgps;
+                            let update = owned * currentKgps;
+                            player.kgps += update;
+                            player.shop[x].kgps *= 2;
+                        }
+                    }
+                },
+                unlocked: true,
+                used: false,
+                img: "./style/img/upgrades/specialMilk.png"
             }],
 
 
@@ -276,8 +306,10 @@ const player = new Vue({
                 title: "Bigger shovel",
                 description: "Shovel 2x more per click using this bigger shovel.",
                 cost: 500,
-                shovelBonus: 2,
-                unlocked: false
+                bonus: 2,
+                unlocked: false,
+                used: false,
+                img: "./style/img/upgrades/shovel1.png"
             }, ]
         };
     },
@@ -375,6 +407,9 @@ const player = new Vue({
         walletAdd: function(kgs) {
             this.wallet += kgs * 0.16;
         },
+        autoUpgradeFunc: function() {
+            console.log("hey")
+        }
     },
     mounted: function() {
         //The OnLoad function.

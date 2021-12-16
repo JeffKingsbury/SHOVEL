@@ -7,9 +7,9 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getDatabase, ref, set, onValue, child, get } from "firebase/database";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { async } from "@firebase/util";
 import * as bcrypt from "bcrypt"
 import { createRequire } from "module"; // Bring in the ability to create the 'require' method
-import { async } from "@firebase/util";
 const require = createRequire(
     import.meta.url); // construct the require method
 
@@ -41,7 +41,6 @@ const firebaseConfig = {
 const firebase = initializeApp(firebaseConfig)
 const auth = getAuth();
 const database = getDatabase();
-console.log(__dirname)
 
 app.use(express.static("public"));
 app.use(cookieParser());

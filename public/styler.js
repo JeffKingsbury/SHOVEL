@@ -1,3 +1,3 @@
-$(`<p class="absolute h-full overflow-hidden text-9xl font-['p2'] text-gray-50">
-SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>SHOVEL <br>
+$(`<p style="z-index:-1" class="absolute h-full overflow-hidden text-right text-9xl font-['p2'] text-gray-100">
+SHOVELSHOVELSHOVELSHOVEL<br>SHOVELSHOVELSHOVELSHOVEL<br>SHOVELSHOVELSHOVELSHOVEL<br>SHOVELSHOVELSHOVELSHOVEL<br>SHOVELSHOVELSHOVELSHOVEL<br>SHOVELSHOVELSHOVELSHOVEL<br>SHOVELSHOVELSHOVELSHOVEL<br>SHOVELSHOVELSHOVELSHOVEL<br>SHOVELSHOVELSHOVELSHOVEL<br>
 </p>`).appendTo("#clickerContainerManual, #clickerContainerStats, #clickerContainerOther", )
