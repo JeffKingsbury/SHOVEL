@@ -463,6 +463,21 @@ const player = new Vue({
 
         this.uid = getCookiePlayer("uid")
 
+        if (this.uid != 0) {
+
+            let getData = new XMLHttpRequest;
+            getData.open("POST", "/getUserData");
+            getData.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            getData.send(JSON.stringify({ uid: this.uid }))
+            getData.onreadystatechange = function() {
+                if (getData.readyState === XMLHttpRequest.DONE) {
+                    let status = getData.status;
+                    if (status === 0 || (status >= 200 && status < 400)) {
+                        localStorage.setItem("playerJsonServ", JSON.stringify(JSON.parse(getData.responseText).playerData))
+                    }
+                }
+            }
+        }
         //This checks if the user is logged in or playing locally.
         //If they're playing locally the game is handed over to localstorage, otherwise the server will send the initial info via cookies for all the player variables and progress.
         if (getCookieLocalCheck() == true || localStorage.getItem('playerJsonServ') == 'null' || localStorage.getItem('localCheck') == 'true') {
@@ -582,11 +597,20 @@ function resetLocal() {
     location.reload();
 }
 
-const update = setInterval(function() {
+
+const updateUser = function() {
     if (localStorage.getItem('localCheck') == 'false') {
         let updateServ = new XMLHttpRequest;
         updateServ.open("POST", "/updateUser");
         updateServ.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         updateServ.send(JSON.stringify(player.$data))
     }
-}, 30000)
+}
+const update = setInterval(function() {
+    if (localStorage.getItem('localCheck') == 'false' || !localStorage.getItem('localCheck')) {
+        let updateServ = new XMLHttpRequest;
+        updateServ.open("POST", "/updateUser");
+        updateServ.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        updateServ.send(JSON.stringify(player.$data))
+    }
+}, 1000)

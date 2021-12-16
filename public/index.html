@@ -223,6 +223,7 @@
 
     function playOffline() {
         localStorage.setItem("localCheck", true);
+        localStorage.setItem("newAccCheck", false);
         window.location.replace("/game.html");
 
     }
@@ -242,7 +243,6 @@
                 let status = request.status;
                 if (status === 0 || (status >= 200 && status < 400)) {
                     // The request has been completed successfully
-                    console.log(JSON.parse(request.responseText).auth)
                     if (JSON.parse(request.responseText).auth == true) {
                         localStorage.setItem("newAccCheck", JSON.parse(request.responseText).newAcc)
                         localStorage.setItem("playerJsonServ", JSON.stringify(JSON.parse(request.responseText).playerData))

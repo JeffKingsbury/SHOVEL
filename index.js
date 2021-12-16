@@ -123,3 +123,19 @@ app.post('/updateUser', (req, res) => {
     );
     res.send()
 })
+
+app.post('/getUserData', (req, res) => {
+    let user = req.body.uid
+    const dbRef = ref(getDatabase());
+    get(child(dbRef, `users/${user}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+            res.json({
+                playerData: snapshot.val(),
+            })
+            return
+        } else {
+            console.log("No data available");
+            res.json({ playerData: null })
+        }
+    })
+})
