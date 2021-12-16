@@ -518,15 +518,13 @@ const player = new Vue({
 
 
             for (x = 0; x < this.shop.length; x++) {
-                this.shop[x].shown = servData.shop[(`${x}Shown`)];
+                this.shop[x] = servData.shop[x];
             }
             for (x = 0; x < this.autoUpgrades.length; x++) {
                 this.autoUpgrades[x].unlocked = servData.autoUpgrades[x].unlocked;
-                console.log(this.autoUpgrades[x])
             }
             for (x = 0; x < this.shovelUpgrades.length; x++) {
                 this.shovelUpgrades[x].unlocked = servData.shovelUpgrades[x].unlocked;
-                console.log(this.shovelUpgrades[x])
             }
             for (x in this.modals) {
                 this.modals[x] = servData.modals[x];
