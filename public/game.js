@@ -85,7 +85,7 @@ const dig = setInterval(() => {
 //It games all the relevant info from player.shop[]
 //It has its own purchase() function and remains self contained so multiple can be added without touching the props of the other items.
 Vue.component("shopbutton", {
-    props: ["title", "cost", "kgps", "qty", "description"],
+    props: ["title", "cost", "kgps", "qty", "description", "img"],
     data: function() {
         return {
             qty: 0,
@@ -127,17 +127,18 @@ Vue.component("shopbutton", {
     },
     template: `
     
-    <div style="width:93%" class="m-auto rounded-lg bg-slate-400 my-1 flex h-16 px-2 items-center justify-around border-t-2 border-4 border-b-8 border-slate-500 active:bg-slate-400 active:border-slate-500 hover:scale-105 active:scale-95 transition ease-in-out cursor-pointer select-none hover:bg-slate-300 hover:border-slate-400 font-mono text-sm" v-on:click="purchase()">     
-    <div class="flex flex-col w-full">     
-            <p>{{title}}</p>
-            <p>{{cost | toCurrency}}</p>
-            </div>
+    <div style="contain:content;width:93%" class="m-auto rounded-lg bg-slate-400 my-1 flex h-16 px-2 items-center justify-around border-t-2 border-4 border-b-8 border-slate-500 active:bg-slate-400 active:border-slate-500 hover:scale-105 active:scale-95 transition ease-in-out cursor-pointer select-none hover:bg-slate-300 hover:border-slate-400 font-mono text-sm" v-on:click="purchase()">     
+  
+            <img :src="img" alt="item icon" class="absolute -left-2 top-0 h-20" style="width:auto" />
+            
+            
             <div class="flex flex-col w-full justify-center items-center text-center">     
-            <p class="w-3/4">{{kgps}} Kg per second</p>
+            <p class="text-lg">{{title}}</p>
+            <p class="text-xs">{{kgps}} Kg per second</p>
             </div>
-            <div class="lg:flex hidden flex-col w-1/3 text-right">     
-            <p>Owned:</p>
-            <p>{{qty}}</p>
+            <div class="flex w-1/2 flex-col text-right">     
+            <p class="">$ {{cost | toCurrency}}</p>
+            <p class="inline text-xs">Owned: {{qty}}</p>
             </div>    
             </div>
     `,
@@ -242,13 +243,14 @@ const player = new Vue({
                 tutorial1: false,
             },
             shop: [{
-                    title: "children",
+                    title: "Local kid",
                     description: "A local child whos parents agreed will help out! Can't shovel all that much (for now). But cheap labor is cheap labor.",
                     cost: 15,
                     kgps: 2,
                     shown: false,
                     qty: 0,
                     bonusMultiplier: 0,
+                    img: "./style/img/baby.png"
                 },
                 {
                     title: "Snoomba",
@@ -258,6 +260,7 @@ const player = new Vue({
                     shown: false,
                     qty: 0,
                     bonusMultiplier: 0,
+                    img: "./style/img/snoomba.png"
 
                 },
                 {
@@ -268,16 +271,20 @@ const player = new Vue({
                     shown: false,
                     qty: 0,
                     bonusMultiplier: 0,
+                    img: "./style/img/worker.png"
+
 
                 },
                 {
                     title: "City snow plow",
                     description: "",
                     cost: 500000,
-                    kgps: 10000000000,
+                    kgps: 50000,
                     shown: false,
                     qty: 0,
                     bonusMultiplier: 0,
+                    img: "./style/img/plow.png"
+
 
                 },
             ],
@@ -314,6 +321,9 @@ const player = new Vue({
         };
     },
     computed: {
+        moneyPerSecond: function() {
+            return this.kgps * 0.16
+        },
         driveway: function() {
             return `Average driveways shoveled: ${Math.floor(this.totalDug / 650)}`;
         },
